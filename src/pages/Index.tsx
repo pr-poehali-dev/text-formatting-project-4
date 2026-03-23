@@ -501,11 +501,19 @@ export default function Index() {
               <img
                 src="https://cdn.poehali.dev/files/9446a551-d05e-425a-9db0-609e9384afdc.JPG"
                 alt="Алексей с семьёй"
-                className="w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-[1.02]"
+                className="w-full object-contain rounded-xl transition-transform duration-300 group-hover:scale-[1.02]"
+                style={{ imageRendering: "auto" }}
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center rounded-xl">
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/60 rounded-full p-3">
                   <Icon name="ZoomIn" size={22} className="text-white" />
+                </div>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-4 py-3 rounded-b-xl">
+                <div className="font-semibold text-white text-sm">Цыбуля Алексей Викторович</div>
+                <div className="text-white/70 text-xs mt-0.5 flex items-center gap-1">
+                  <Icon name="MapPin" size={11} className="text-amber-400" />
+                  г. Ижевск
                 </div>
               </div>
             </div>
