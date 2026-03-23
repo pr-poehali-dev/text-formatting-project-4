@@ -1,6 +1,12 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
 
+declare global {
+  interface Window {
+    ym?: (counterId: number, action: string, goal: string) => void;
+  }
+}
+
 const HERO_IMAGE = "https://cdn.poehali.dev/projects/06d842e1-c888-43bf-b28a-97d35d5e5dd2/files/1f0a741e-0e9c-494b-9791-3026b2e6de24.jpg";
 
 const reviews = [
@@ -602,17 +608,35 @@ export default function Index() {
             ))}
           </div>
 
-          {!showAllReviews && (
-            <div className="text-center mt-8">
+          <div className="text-center mt-8 flex flex-col items-center gap-4">
+            {!showAllReviews && (
               <button
-                onClick={() => setShowAllReviews(true)}
+                onClick={() => {
+                  setShowAllReviews(true);
+                  if (window.ym) window.ym(107246756, "reachGoal", "vseotzivi");
+                }}
                 className="inline-flex items-center gap-2 border border-white/20 hover:border-amber-400/50 hover:text-amber-400 text-foreground px-6 py-3 rounded-lg transition-all duration-200"
               >
                 <Icon name="ChevronDown" size={18} />
                 Посмотреть все {reviews.length} отзывов
               </button>
-            </div>
-          )}
+            )}
+
+            {showAllReviews && (
+              <a
+                href="https://kwork.ru/user/vash_directolog"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => {
+                  if (window.ym) window.ym(107246756, "reachGoal", "vash_directolog");
+                }}
+                className="inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-gray-900 font-bold px-8 py-4 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95"
+              >
+                <Icon name="ExternalLink" size={18} />
+                Все 215 отзывов на Kwork
+              </a>
+            )}
+          </div>
         </div>
       </section>
 
