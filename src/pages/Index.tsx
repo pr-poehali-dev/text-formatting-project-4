@@ -504,7 +504,7 @@ export default function Index() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {(showAllReviews ? reviews : reviews.slice(0, 3)).map((r) => (
+            {(showAllReviews ? reviews : reviews.slice(0, 9)).map((r) => (
               <div
                 key={r.author}
                 className="rounded-xl border border-white/10 bg-card overflow-hidden group cursor-pointer"
