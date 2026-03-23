@@ -7,62 +7,62 @@ const reviews = [
   {
     author: "seowork23",
     date: "12 августа 2025",
-    text: "Если вам нужна скорость и качество работы — вам к Алексею. Быстро и профессионально настраивает рекламу, не навязывает лишних услуг, напротив, старается сэкономить ваш бюджет. Буду обращаться ещё",
+    img: "https://cdn.poehali.dev/files/c16c2b36-b7bc-483d-ad27-32bf89e11ca0.jpg",
   },
   {
     author: "smyulia",
     date: "3 августа 2025",
-    text: "Заказывала настройку яндекс директа у Алексея, работа была выполнена качественно и быстро. Рекомендую.",
+    img: "https://cdn.poehali.dev/files/a21cd23c-29ae-445e-a337-8525f39481cb.jpg",
   },
   {
     author: "EKBEGOR",
     date: "3 июня 2025",
-    text: "Оперативно все настроили, показатели хорошие, будем работать дальше Спасибо!",
+    img: "https://cdn.poehali.dev/files/041820cb-b935-4419-b98d-11375ccdee39.jpg",
   },
   {
     author: "munigovskaya",
     date: "23 мая 2025",
-    text: "Спасибо большое специалисту за настройку Товарной кампании — аккуратная и быстрая работа, буду обращаться еще!",
+    img: "https://cdn.poehali.dev/files/9588e4fa-ef3f-4157-9997-6acd10ad4b02.jpg",
   },
   {
     author: "sv775577",
     date: "5 мая 2025",
-    text: "Запускала контекстную рекламу с нуля. Обратилась к Алексею и не ошиблась, все настроил как надо, пошли заявки. Будем продолжать сотрудничество. Рекомендую Алексея, как профессионала своего дела.",
+    img: "https://cdn.poehali.dev/files/ed65c9cb-efd7-4fb4-bff1-28721b48608d.jpg",
   },
   {
     author: "loboffgood",
     date: "29 апреля 2025",
-    text: "Обращался к Алексею по поводу настройки рекламы в Директе на поиске, работа была выполнена на высоком уровне и даже раньше срока, спустя несколько дней после первичной настройки Алексей сделал оптимизацию и подсказал что можно дальше улучшить, уже есть первые результаты, будем продолжать работу. Что не менее важно, Алексей оперативно отвечает на возникающие вопросы.",
+    img: "https://cdn.poehali.dev/files/57eb290d-1806-4a80-94ea-dfedb4937441.jpg",
   },
   {
     author: "and2381",
     date: "10 апреля 2025",
-    text: "Отличный специалист своего дела, знает все нюансы Директа, делает хорошую и уникальную (чего другие не умеют) настройку рекламных компаний, подсказывает и консультирует \"до и после\", надежен, общителен, рекомендую!",
+    img: "https://cdn.poehali.dev/files/a1e478a5-71d8-47f7-a2b5-70e456e76561.jpg",
   },
   {
     author: "redsell",
     date: "10 апреля 2025",
-    text: "Заказывал настройку поиска в директе. Консультация на уровне. Получил заявки по нужной стоимости в первый же день, будем дальше смотреть по результату, приятный бонус порадовал. Спасибо, вернемся еще",
+    img: "https://cdn.poehali.dev/files/8cfe8d7f-de96-410c-af9c-c577ebf96149.jpg",
   },
   {
     author: "vladimir_willis",
     date: "23 марта 2025",
-    text: "Быстрая и качественная работа. Списались, обсудили, все четко и по делу! Рекомендую исполнителя! Сделал больше чем обсуждалось. Спасибо.",
+    img: "https://cdn.poehali.dev/files/218cc5ea-dc1a-4323-b889-847d72640ea0.jpg",
   },
   {
     author: "eagleFin",
     date: "26 марта 2025",
-    text: "Спасибо Алексею за подробную консультацию по Яндекс Директ. Помог разобраться не только с яндекс директом, но и с метрикой. Рассказал про А/Б тестирование и как с ним работать. Человек явно вел не один десяток проектов и понимает о чем говорит. За час я научился больше, чем за десятками часов просмотра обучающих роликов. Однозначно рекомендую специалиста всем кто хочет улучшить свои знания или дать буст рекламе вашего бизнеса.",
+    img: "https://cdn.poehali.dev/files/b8d548e4-4a30-4755-aa52-5b4831e5acbd.jpg",
   },
   {
     author: "Tronid",
     date: "19 марта 2025",
-    text: "Рекламная кампания, разработанная Алексеем в директе (поиск) продемонстрировала лучшую эффективность (порядка в 2 раза), чем ранее созданная.",
+    img: "https://cdn.poehali.dev/files/73157c7c-798b-442a-b7e8-7643aaf3b449.jpg",
   },
   {
     author: "Akimova_art",
     date: "24 февраля 2025",
-    text: "Благодарю Алексея за проделанную работу! Задача была запустить 3 компании с 0, оптимизировать старые не было смысла. Работа проведена грамотно: подобраны ключи по нашей нише — их количество намного больше, чем было, образованы новые группы, подобрана стратегия, подходящая для нашего бизнеса, в первую неделю я увидела охват в 4 р больше по одной из компаний, что не могло не порадовать, по каждой компании мы получали конверсии со стоимостью ниже, чем было до в 2 раза!!!",
+    img: "https://cdn.poehali.dev/files/5337b7fc-4795-45b3-b862-91e2a52e4214.jpg",
   },
 ];
 
@@ -132,6 +132,8 @@ const includedItems = [
 
 export default function Index() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [showAllReviews, setShowAllReviews] = useState(false);
+  const [lightboxImg, setLightboxImg] = useState<string | null>(null);
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans antialiased">
@@ -470,6 +472,27 @@ export default function Index() {
           </div>
         </div>
 
+        {/* Лайтбокс */}
+        {lightboxImg && (
+          <div
+            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 cursor-zoom-out"
+            onClick={() => setLightboxImg(null)}
+          >
+            <img
+              src={lightboxImg}
+              alt="Отзыв"
+              className="max-w-full max-h-full rounded-xl shadow-2xl object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+            <button
+              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+              onClick={() => setLightboxImg(null)}
+            >
+              <Icon name="X" size={20} className="text-white" />
+            </button>
+          </div>
+        )}
+
         {/* Отзывы */}
         <div className="mt-20">
           <div className="text-center mb-12">
@@ -480,32 +503,54 @@ export default function Index() {
             </h2>
           </div>
 
-          <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-            {reviews.map((r) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {(showAllReviews ? reviews : reviews.slice(0, 3)).map((r) => (
               <div
                 key={r.author}
-                className="break-inside-avoid rounded-xl border border-white/10 bg-card p-5 mb-4"
+                className="rounded-xl border border-white/10 bg-card overflow-hidden group cursor-pointer"
+                onClick={() => setLightboxImg(r.img)}
               >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-9 h-9 rounded-full bg-amber-500/15 border border-amber-500/30 flex items-center justify-center shrink-0">
-                    <span className="text-amber-400 text-xs font-bold uppercase">
-                      {r.author[0]}
-                    </span>
+                <div className="relative overflow-hidden">
+                  <img
+                    src={r.img}
+                    alt={`Отзыв от ${r.author}`}
+                    className="w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/60 rounded-full p-3">
+                      <Icon name="ZoomIn" size={22} className="text-white" />
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-amber-500/15 border border-amber-500/30 flex items-center justify-center shrink-0">
+                    <span className="text-amber-400 text-xs font-bold uppercase">{r.author[0]}</span>
                   </div>
                   <div>
                     <div className="font-semibold text-sm">{r.author}</div>
                     <div className="flex items-center gap-1.5 mt-0.5">
-                      <span className="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center">
-                        <span className="text-green-400 text-[10px]">✓</span>
+                      <span className="w-3.5 h-3.5 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <span className="text-green-400 text-[9px]">✓</span>
                       </span>
                       <span className="text-muted-foreground text-xs">{r.date}</span>
                     </div>
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">{r.text}</p>
               </div>
             ))}
           </div>
+
+          {!showAllReviews && (
+            <div className="text-center mt-8">
+              <button
+                onClick={() => setShowAllReviews(true)}
+                className="inline-flex items-center gap-2 border border-white/20 hover:border-amber-400/50 hover:text-amber-400 text-foreground px-6 py-3 rounded-lg transition-all duration-200"
+              >
+                <Icon name="ChevronDown" size={18} />
+                Посмотреть все отзывы ({reviews.length})
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
