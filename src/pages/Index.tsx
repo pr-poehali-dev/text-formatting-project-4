@@ -493,18 +493,36 @@ export default function Index() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { val: "377", label: "проектов" },
-              { val: "215", label: "отзывов" },
-              { val: "42%", label: "возвращаются" },
-              { val: "с 2016", label: "года в рекламе" },
-            ].map((s) => (
-              <div key={s.label} className="rounded-xl border border-white/10 bg-card p-6 text-center">
-                <div className="font-display text-3xl font-bold text-amber-400">{s.val}</div>
-                <div className="text-sm text-muted-foreground mt-1">{s.label}</div>
+          <div className="flex flex-col gap-4">
+            <div
+              className="relative rounded-xl overflow-hidden cursor-zoom-in group"
+              onClick={() => setLightboxImg("https://cdn.poehali.dev/files/9446a551-d05e-425a-9db0-609e9384afdc.JPG")}
+            >
+              <img
+                src="https://cdn.poehali.dev/files/9446a551-d05e-425a-9db0-609e9384afdc.JPG"
+                alt="Алексей с семьёй"
+                className="w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-[1.02]"
+              />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center rounded-xl">
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/60 rounded-full p-3">
+                  <Icon name="ZoomIn" size={22} className="text-white" />
+                </div>
               </div>
-            ))}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { val: "377", label: "проектов" },
+                { val: "215", label: "отзывов" },
+                { val: "42%", label: "возвращаются" },
+                { val: "с 2016", label: "года в рекламе" },
+              ].map((s) => (
+                <div key={s.label} className="rounded-xl border border-white/10 bg-card p-6 text-center">
+                  <div className="font-display text-3xl font-bold text-amber-400">{s.val}</div>
+                  <div className="text-sm text-muted-foreground mt-1">{s.label}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
