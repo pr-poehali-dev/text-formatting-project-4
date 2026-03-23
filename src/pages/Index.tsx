@@ -4,54 +4,102 @@ import Icon from "@/components/ui/icon";
 const HERO_IMAGE = "https://cdn.poehali.dev/projects/06d842e1-c888-43bf-b28a-97d35d5e5dd2/files/1f0a741e-0e9c-494b-9791-3026b2e6de24.jpg";
 
 const reviews = [
-  { author: "Arturius", date: "5 февраля 2026", img: "https://cdn.poehali.dev/files/6762a050-4705-4f48-8af7-eccc0fd411e4.jpg" },
-  { author: "Akimova_art", date: "6 февраля 2026", img: "https://cdn.poehali.dev/files/10c2f78c-9612-4de7-8be2-d552923f04b8.jpg" },
-  { author: "comradeLV", date: "29 января 2026", img: "https://cdn.poehali.dev/files/125ef1a5-f60c-45ad-b441-4f6d2abee9eb.jpg" },
-  { author: "svsb77", date: "3 февраля 2026", img: "https://cdn.poehali.dev/files/272dc2cb-0aa3-4eb1-af12-a2abbdc3d43e.jpg" },
-  { author: "svsb77 (2)", date: "3 февраля 2026", img: "https://cdn.poehali.dev/files/ac96cc2b-abdb-41a9-b4cd-8737f497f151.jpg" },
-  { author: "Arturius (2)", date: "28 января 2026", img: "https://cdn.poehali.dev/files/c5643bd9-724e-4cc3-8127-003db9dfdaf9.jpg" },
-  { author: "v88vap", date: "29 декабря 2025", img: "https://cdn.poehali.dev/files/871e860c-4b92-4255-9fd6-ec46a0aa8423.jpg" },
-  { author: "TranslateCapitals", date: "20 декабря 2025", img: "https://cdn.poehali.dev/files/38e965f7-7edf-46cd-bb36-76a8c4b8b3ce.jpg" },
-  { author: "korifeylogo", date: "15 января 2026", img: "https://cdn.poehali.dev/files/481485f3-b098-45ce-81b5-af2db9de3dd2.jpg" },
-  { author: "TranslateCapitals (2)", date: "3 декабря 2025", img: "https://cdn.poehali.dev/files/0205fe0c-f864-4dd5-95f3-e9dc7ab3985a.jpg" },
-  { author: "alexandrastaffpro", date: "11 декабря 2025", img: "https://cdn.poehali.dev/files/e82ad6bd-68d3-4fde-a0da-31ffae6522f0.jpg" },
-  { author: "dasatarasenko9", date: "20 ноября 2025", img: "https://cdn.poehali.dev/files/11c24c08-e00a-49d0-b632-6caedc7abe32.jpg" },
-  { author: "comradeLV (2)", date: "20 ноября 2025", img: "https://cdn.poehali.dev/files/3d162c5a-58b3-420a-adbe-5bd7f6f6d555.jpg" },
-  { author: "escmsc", date: "17 ноября 2025", img: "https://cdn.poehali.dev/files/dfcd0d55-8248-4592-9455-e9000e135338.jpg" },
-  { author: "Gravip", date: "15 октября 2025", img: "https://cdn.poehali.dev/files/8ba6309c-5d22-43fc-b518-da12d0277b1f.jpg" },
-  { author: "ManooMaria", date: "20 октября 2025", img: "https://cdn.poehali.dev/files/f1dd388f-77df-4538-83fe-00f5644896a9.jpg" },
-  { author: "m4ximka201815", date: "8 октября 2025", img: "https://cdn.poehali.dev/files/f826ba50-db0c-44bb-8dd3-1499a9b53ceb.jpg" },
-  { author: "morozriel", date: "13 ноября 2025", img: "https://cdn.poehali.dev/files/eeabc731-03e9-48cf-ae56-887a5befd6c8.jpg" },
-  { author: "ichigek", date: "18 сентября 2025", img: "https://cdn.poehali.dev/files/14abc063-254a-4f21-a31a-5ec4c82cea60.jpg" },
-  { author: "dasatarasenko9 (2)", date: "15 сентября 2025", img: "https://cdn.poehali.dev/files/edc1cf06-d7c4-40b3-80e9-6756d27e2b30.jpg" },
-  { author: "ichigek (2)", date: "6 сентября 2025", img: "https://cdn.poehali.dev/files/44f5c541-332f-41f6-a53a-25402d32dbd2.jpg" },
-  { author: "Pavkich", date: "4 сентября 2025", img: "https://cdn.poehali.dev/files/81c95b9e-6f03-4bbb-a342-1982b06da286.jpg" },
-  { author: "phil", date: "5 сентября 2025", img: "https://cdn.poehali.dev/files/045f5897-945c-4da4-ae31-165489caa53d.jpg" },
-  { author: "avd379", date: "22 августа 2025", img: "https://cdn.poehali.dev/files/21c8c0a6-03f1-455c-a73a-54c9c343223d.jpg" },
-  { author: "seowork23", date: "13 августа 2025", img: "https://cdn.poehali.dev/files/6be4e030-e245-4d80-8c9d-759b9dd86adb.jpg" },
-  { author: "buganoff82", date: "12 августа 2025", img: "https://cdn.poehali.dev/files/4f0bf400-b094-4512-94bc-e7a1e17c106c.jpg" },
-  { author: "seowork23 (2)", date: "12 августа 2025", img: "https://cdn.poehali.dev/files/319a9d07-ee78-4cd6-83a1-bed379203df2.jpg" },
-  { author: "smyulia", date: "3 августа 2025", img: "https://cdn.poehali.dev/files/b3338ce8-07c7-4784-9278-a3bbad32bd75.jpg" },
-  { author: "EKBEGOR", date: "3 июня 2025", img: "https://cdn.poehali.dev/files/cf88db64-d6c0-488e-bb16-5b838f7ba45a.jpg" },
-  { author: "munigovskaya", date: "23 мая 2025", img: "https://cdn.poehali.dev/files/e95a32ab-ce48-4271-aeb5-2a91bd3ce5a3.jpg" },
-  { author: "sv775577", date: "5 мая 2025", img: "https://cdn.poehali.dev/files/ed285e81-fe6a-4bd7-8f1f-ef508870f530.jpg" },
-  { author: "loboffgood", date: "29 апреля 2025", img: "https://cdn.poehali.dev/files/df59f3a3-41f4-4630-9f25-688dbc32afb5.jpg" },
-  { author: "and2381", date: "10 апреля 2025", img: "https://cdn.poehali.dev/files/c762c81f-15a5-48fb-b58d-e5600e153415.jpg" },
-  { author: "redsell", date: "10 апреля 2025", img: "https://cdn.poehali.dev/files/0f3e1aa2-2e5d-4fc7-8a2e-ba18b1da3c70.jpg" },
-  { author: "vladimir_willis", date: "23 марта 2025", img: "https://cdn.poehali.dev/files/d0ece022-3d2f-4a5e-95c5-f00ccc52f877.jpg" },
-  { author: "eagleFin", date: "26 марта 2025", img: "https://cdn.poehali.dev/files/a5086054-d78b-4da6-851c-bc3783fdc31b.jpg" },
-  { author: "Tronid", date: "19 марта 2025", img: "https://cdn.poehali.dev/files/8409b519-945e-4371-82c0-17a928158abd.jpg" },
-  { author: "Akimova_art (2)", date: "24 февраля 2025", img: "https://cdn.poehali.dev/files/350143d5-989e-4894-b99f-f368a3bdb6aa.jpg" },
-  { author: "Mitrofanova_mariya", date: "7 февраля 2025", img: "https://cdn.poehali.dev/files/5fb27a55-5e3b-47f9-9cef-a073adcd66cf.jpg" },
-  { author: "OOOMDS", date: "28 февраля 2025", img: "https://cdn.poehali.dev/files/19d2b0e9-7501-4f09-bf35-dfeff1c210fb.jpg" },
-  { author: "sloov", date: "31 января 2025", img: "https://cdn.poehali.dev/files/2f0c2b06-071e-4a49-a205-b9edc12149d4.jpg" },
-  { author: "dasatarasenko9 (3)", date: "17 января 2025", img: "https://cdn.poehali.dev/files/0bf5f121-c9a6-42d7-893c-b74acaaaeb4b.jpg" },
-  { author: "Aleks_Y", date: "24 января 2025", img: "https://cdn.poehali.dev/files/d0268d94-1c17-4e4c-a3b7-d4ac4603b32e.jpg" },
-  { author: "popovdenis22", date: "23 декабря 2024", img: "https://cdn.poehali.dev/files/93fc814a-3249-433b-a6fa-7ebe65ab120d.jpg" },
-  { author: "Valelord", date: "13 августа 2024", img: "https://cdn.poehali.dev/files/475492d3-fd65-4ba5-8c14-d886f8b9a66b.jpg" },
-  { author: "matvey_devve", date: "4 июля 2024", img: "https://cdn.poehali.dev/files/c2d5d821-f0b6-44d8-8bc1-29576e77d898.jpg" },
-  { author: "ava1anch9", date: "26 июня 2024", img: "https://cdn.poehali.dev/files/39dc987b-bc69-4940-9bae-735959baebe9.jpg" },
-  { author: "comradeLV (3)", date: "2 февраля 2024", img: "https://cdn.poehali.dev/files/e864d5cc-1ced-4386-a5b2-d9def381f7f9.jpg" },
+  // 0
+  { author: "Arturius",          date: "5 февраля 2026",   img: "https://cdn.poehali.dev/files/6762a050-4705-4f48-8af7-eccc0fd411e4.jpg" },
+  // 1
+  { author: "Akimova_art",       date: "6 февраля 2026",   img: "https://cdn.poehali.dev/files/10c2f78c-9612-4de7-8be2-d552923f04b8.jpg" },
+  // 2
+  { author: "korifeylogo",       date: "15 января 2026",   img: "https://cdn.poehali.dev/files/481485f3-b098-45ce-81b5-af2db9de3dd2.jpg" },
+  // 3
+  { author: "svsb77",            date: "3 февраля 2026",   img: "https://cdn.poehali.dev/files/272dc2cb-0aa3-4eb1-af12-a2abbdc3d43e.jpg" },
+  // 4
+  { author: "comradeLV",         date: "29 января 2026",   img: "https://cdn.poehali.dev/files/125ef1a5-f60c-45ad-b441-4f6d2abee9eb.jpg" },
+  // 5
+  { author: "v88vap",            date: "29 декабря 2025",  img: "https://cdn.poehali.dev/files/871e860c-4b92-4255-9fd6-ec46a0aa8423.jpg" },
+  // 6
+  { author: "TranslateCapitals", date: "20 декабря 2025",  img: "https://cdn.poehali.dev/files/38e965f7-7edf-46cd-bb36-76a8c4b8b3ce.jpg" },
+  // 7
+  { author: "alexandrastaffpro", date: "11 декабря 2025",  img: "https://cdn.poehali.dev/files/e82ad6bd-68d3-4fde-a0da-31ffae6522f0.jpg" },
+  // 8
+  { author: "dasatarasenko9",    date: "20 ноября 2025",   img: "https://cdn.poehali.dev/files/11c24c08-e00a-49d0-b632-6caedc7abe32.jpg" },
+  // 9  — Arturius #2 (+9 от #0)
+  { author: "Arturius",          date: "28 января 2026",   img: "https://cdn.poehali.dev/files/c5643bd9-724e-4cc3-8127-003db9dfdaf9.jpg" },
+  // 10
+  { author: "escmsc",            date: "17 ноября 2025",   img: "https://cdn.poehali.dev/files/dfcd0d55-8248-4592-9455-e9000e135338.jpg" },
+  // 11
+  { author: "morozriel",         date: "13 ноября 2025",   img: "https://cdn.poehali.dev/files/eeabc731-03e9-48cf-ae56-887a5befd6c8.jpg" },
+  // 12
+  { author: "Gravip",            date: "15 октября 2025",  img: "https://cdn.poehali.dev/files/8ba6309c-5d22-43fc-b518-da12d0277b1f.jpg" },
+  // 13 — svsb77 #2 (+10 от #3)
+  { author: "svsb77",            date: "3 февраля 2026",   img: "https://cdn.poehali.dev/files/ac96cc2b-abdb-41a9-b4cd-8737f497f151.jpg" },
+  // 14
+  { author: "ManooMaria",        date: "20 октября 2025",  img: "https://cdn.poehali.dev/files/f1dd388f-77df-4538-83fe-00f5644896a9.jpg" },
+  // 15
+  { author: "m4ximka201815",     date: "8 октября 2025",   img: "https://cdn.poehali.dev/files/f826ba50-db0c-44bb-8dd3-1499a9b53ceb.jpg" },
+  // 16 — TranslateCapitals #2 (+10 от #6)
+  { author: "TranslateCapitals", date: "3 декабря 2025",   img: "https://cdn.poehali.dev/files/0205fe0c-f864-4dd5-95f3-e9dc7ab3985a.jpg" },
+  // 17
+  { author: "ichigek",           date: "18 сентября 2025", img: "https://cdn.poehali.dev/files/14abc063-254a-4f21-a31a-5ec4c82cea60.jpg" },
+  // 18
+  { author: "Pavkich",           date: "4 сентября 2025",  img: "https://cdn.poehali.dev/files/81c95b9e-6f03-4bbb-a342-1982b06da286.jpg" },
+  // 19
+  { author: "phil",              date: "5 сентября 2025",  img: "https://cdn.poehali.dev/files/045f5897-945c-4da4-ae31-165489caa53d.jpg" },
+  // 20 — comradeLV #2 (+16 от #4)
+  { author: "comradeLV",         date: "20 ноября 2025",   img: "https://cdn.poehali.dev/files/3d162c5a-58b3-420a-adbe-5bd7f6f6d555.jpg" },
+  // 21
+  { author: "avd379",            date: "22 августа 2025",  img: "https://cdn.poehali.dev/files/21c8c0a6-03f1-455c-a73a-54c9c343223d.jpg" },
+  // 22
+  { author: "seowork23",         date: "13 августа 2025",  img: "https://cdn.poehali.dev/files/6be4e030-e245-4d80-8c9d-759b9dd86adb.jpg" },
+  // 23
+  { author: "buganoff82",        date: "12 августа 2025",  img: "https://cdn.poehali.dev/files/4f0bf400-b094-4512-94bc-e7a1e17c106c.jpg" },
+  // 24
+  { author: "smyulia",           date: "3 августа 2025",   img: "https://cdn.poehali.dev/files/b3338ce8-07c7-4784-9278-a3bbad32bd75.jpg" },
+  // 25
+  { author: "EKBEGOR",           date: "3 июня 2025",      img: "https://cdn.poehali.dev/files/cf88db64-d6c0-488e-bb16-5b838f7ba45a.jpg" },
+  // 26 — dasatarasenko9 #2 (+18 от #8)
+  { author: "dasatarasenko9",    date: "15 сентября 2025", img: "https://cdn.poehali.dev/files/edc1cf06-d7c4-40b3-80e9-6756d27e2b30.jpg" },
+  // 27
+  { author: "munigovskaya",      date: "23 мая 2025",      img: "https://cdn.poehali.dev/files/e95a32ab-ce48-4271-aeb5-2a91bd3ce5a3.jpg" },
+  // 28
+  { author: "sv775577",          date: "5 мая 2025",       img: "https://cdn.poehali.dev/files/ed285e81-fe6a-4bd7-8f1f-ef508870f530.jpg" },
+  // 29 — seowork23 #2 (+7 от #22)
+  { author: "seowork23",         date: "12 августа 2025",  img: "https://cdn.poehali.dev/files/319a9d07-ee78-4cd6-83a1-bed379203df2.jpg" },
+  // 30
+  { author: "loboffgood",        date: "29 апреля 2025",   img: "https://cdn.poehali.dev/files/df59f3a3-41f4-4630-9f25-688dbc32afb5.jpg" },
+  // 31
+  { author: "and2381",           date: "10 апреля 2025",   img: "https://cdn.poehali.dev/files/c762c81f-15a5-48fb-b58d-e5600e153415.jpg" },
+  // 32
+  { author: "redsell",           date: "10 апреля 2025",   img: "https://cdn.poehali.dev/files/0f3e1aa2-2e5d-4fc7-8a2e-ba18b1da3c70.jpg" },
+  // 33 — ichigek #2 (+16 от #17)
+  { author: "ichigek",           date: "6 сентября 2025",  img: "https://cdn.poehali.dev/files/44f5c541-332f-41f6-a53a-25402d32dbd2.jpg" },
+  // 34
+  { author: "vladimir_willis",   date: "23 марта 2025",    img: "https://cdn.poehali.dev/files/d0ece022-3d2f-4a5e-95c5-f00ccc52f877.jpg" },
+  // 35
+  { author: "eagleFin",          date: "26 марта 2025",    img: "https://cdn.poehali.dev/files/a5086054-d78b-4da6-851c-bc3783fdc31b.jpg" },
+  // 36
+  { author: "Tronid",            date: "19 марта 2025",    img: "https://cdn.poehali.dev/files/8409b519-945e-4371-82c0-17a928158abd.jpg" },
+  // 37 — Akimova_art #2 (+36 от #1)
+  { author: "Akimova_art",       date: "24 февраля 2025",  img: "https://cdn.poehali.dev/files/350143d5-989e-4894-b99f-f368a3bdb6aa.jpg" },
+  // 38
+  { author: "Mitrofanova_mariya",date: "7 февраля 2025",   img: "https://cdn.poehali.dev/files/5fb27a55-5e3b-47f9-9cef-a073adcd66cf.jpg" },
+  // 39
+  { author: "OOOMDS",            date: "28 февраля 2025",  img: "https://cdn.poehali.dev/files/19d2b0e9-7501-4f09-bf35-dfeff1c210fb.jpg" },
+  // 40
+  { author: "sloov",             date: "31 января 2025",   img: "https://cdn.poehali.dev/files/2f0c2b06-071e-4a49-a205-b9edc12149d4.jpg" },
+  // 41 — dasatarasenko9 #3 (+15 от #26)
+  { author: "dasatarasenko9",    date: "17 января 2025",   img: "https://cdn.poehali.dev/files/0bf5f121-c9a6-42d7-893c-b74acaaaeb4b.jpg" },
+  // 42
+  { author: "Aleks_Y",           date: "24 января 2025",   img: "https://cdn.poehali.dev/files/d0268d94-1c17-4e4c-a3b7-d4ac4603b32e.jpg" },
+  // 43
+  { author: "popovdenis22",      date: "23 декабря 2024",  img: "https://cdn.poehali.dev/files/93fc814a-3249-433b-a6fa-7ebe65ab120d.jpg" },
+  // 44
+  { author: "Valelord",          date: "13 августа 2024",  img: "https://cdn.poehali.dev/files/475492d3-fd65-4ba5-8c14-d886f8b9a66b.jpg" },
+  // 45 — comradeLV #3 (+25 от #20)
+  { author: "comradeLV",         date: "2 февраля 2024",   img: "https://cdn.poehali.dev/files/e864d5cc-1ced-4386-a5b2-d9def381f7f9.jpg" },
+  // 46
+  { author: "matvey_devve",      date: "4 июля 2024",      img: "https://cdn.poehali.dev/files/c2d5d821-f0b6-44d8-8bc1-29576e77d898.jpg" },
+  // 47
+  { author: "ava1anch9",         date: "26 июня 2024",     img: "https://cdn.poehali.dev/files/39dc987b-bc69-4940-9bae-735959baebe9.jpg" },
 ];
 
 const faqItems = [
