@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Icon from "@/components/ui/icon";
 
 declare global {
@@ -171,6 +171,386 @@ const includedItems = [
     bonus: true,
   },
 ];
+
+const NICHES = [
+  "Одежда и обувь",
+  "Электроника и гаджеты",
+  "Детские товары",
+  "Мебель и интерьер",
+  "Спорт и туризм",
+  "Зоотовары",
+  "Косметика и парфюмерия",
+  "Товары для дома",
+  "Строительство и ремонт",
+  "Автотовары",
+  "Ювелирные украшения",
+  "Продукты питания",
+  "Медицинские товары",
+  "Книги и канцтовары",
+  "Садоводство и огород",
+];
+
+const SEASON_COEFFICIENTS: Record<string, number> = {
+  "Одежда и обувь": 1.15,
+  "Электроника и гаджеты": 1.2,
+  "Детские товары": 1.1,
+  "Мебель и интерьер": 1.05,
+  "Спорт и туризм": 1.18,
+  "Зоотовары": 1.0,
+  "Косметика и парфюмерия": 1.12,
+  "Товары для дома": 1.08,
+  "Строительство и ремонт": 1.22,
+  "Автотовары": 1.1,
+  "Ювелирные украшения": 1.25,
+  "Продукты питания": 1.0,
+  "Медицинские товары": 1.05,
+  "Книги и канцтовары": 1.07,
+  "Садоводство и огород": 1.3,
+};
+
+function CalcSection() {
+  const [budget, setBudget] = useState(50000);
+  const [niche, setNiche] = useState("Электроника и гаджеты");
+  const [skuCount, setSkuCount] = useState(500);
+  const [useDynamic, setUseDynamic] = useState(false);
+  const [channels, setChannels] = useState({ search: true, rsya: true, gallery: false });
+  const [hasCompetitors, setHasCompetitors] = useState(true);
+  const [avgCheck, setAvgCheck] = useState(3500);
+  const [convRate, setConvRate] = useState(1.5);
+  const [campaignAge, setCampaignAge] = useState<"new" | "mid" | "old">("mid");
+
+  const toggleChannel = (key: keyof typeof channels) => {
+    setChannels(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const results = useMemo(() => {
+    const nicheMult = SEASON_COEFFICIENTS[niche] ?? 1.0;
+
+    // базовый % мусорного трафика
+    let junkBase = 0.28;
+
+    // влияние каналов
+    if (channels.rsya) junkBase += 0.08;
+    if (channels.gallery) junkBase += 0.04;
+    if (channels.search) junkBase -= 0.03;
+
+    // влияние динамики
+    if (useDynamic) junkBase += 0.06;
+
+    // влияние количества SKU: чем больше — тем больше мусора без правильной структуры
+    if (skuCount > 5000) junkBase += 0.07;
+    else if (skuCount > 1000) junkBase += 0.04;
+    else if (skuCount < 100) junkBase -= 0.03;
+
+    // влияние конкурентов (скликивание)
+    if (hasCompetitors) junkBase += 0.05;
+
+    // возраст кампании: новые страдают больше
+    if (campaignAge === "new") junkBase += 0.06;
+    else if (campaignAge === "old") junkBase -= 0.04;
+
+    // ниша
+    junkBase *= nicheMult;
+
+    // ограничиваем разумными пределами
+    const junkRate = Math.min(Math.max(junkBase, 0.12), 0.62);
+
+    // потери
+    const lostBudget = Math.round(budget * junkRate);
+    const effectiveBudget = budget - lostBudget;
+
+    // клики и заказы
+    const avgCpc = niche === "Электроника и гаджеты" ? 38 :
+                   niche === "Ювелирные украшения" ? 55 :
+                   niche === "Строительство и ремонт" ? 42 : 28;
+    const totalClicks = Math.round(budget / avgCpc);
+    const junkClicks = Math.round(totalClicks * junkRate);
+    const goodClicks = totalClicks - junkClicks;
+
+    const crFactor = convRate / 100;
+    const ordersTotal = Math.round(totalClicks * crFactor);
+    const ordersLost = Math.round(junkClicks * crFactor * 0.15); // часть мусора даёт фейк-конверсии
+    const ordersReal = ordersTotal - ordersLost;
+
+    // потери в деньгах
+    const revenueLost = Math.round(lostBudget * (avgCheck / avgCpc) * crFactor * 0.6);
+
+    // потенциальный ДРР
+    const drrCurrent = budget > 0 && ordersReal > 0
+      ? ((budget / (ordersReal * avgCheck)) * 100).toFixed(1)
+      : "—";
+    const drrOptimal = budget > 0 && ordersReal > 0
+      ? ((effectiveBudget / (ordersReal * avgCheck)) * 100).toFixed(1)
+      : "—";
+
+    return {
+      junkRate: Math.round(junkRate * 100),
+      lostBudget,
+      effectiveBudget,
+      totalClicks,
+      junkClicks,
+      goodClicks,
+      ordersReal,
+      revenueLost,
+      drrCurrent,
+      drrOptimal,
+    };
+  }, [budget, niche, skuCount, useDynamic, channels, hasCompetitors, avgCheck, convRate, campaignAge]);
+
+  const fmtRub = (n: number) =>
+    n.toLocaleString("ru-RU") + " ₽";
+
+  return (
+    <section className="py-24 bg-card">
+      <div className="container max-w-5xl mx-auto px-6">
+        <div className="text-center mb-12">
+          <span className="text-amber-400 text-sm font-medium uppercase tracking-widest">Инструмент</span>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mt-3 mb-4">
+            Сколько вы теряете на мусорных показах?
+          </h2>
+          <p className="text-muted-foreground max-w-xl mx-auto">
+            Введите параметры своей рекламы — калькулятор покажет реальные потери бюджета прямо сейчас
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* ─── ЛЕВАЯ КОЛОНКА — ПАРАМЕТРЫ ─── */}
+          <div className="space-y-5 bg-background rounded-2xl p-6 border border-white/10">
+
+            {/* Тематика */}
+            <div>
+              <label className="text-sm text-muted-foreground mb-1.5 block">Тематика магазина</label>
+              <select
+                value={niche}
+                onChange={e => setNiche(e.target.value)}
+                className="w-full bg-card border border-white/15 rounded-lg px-3 py-2.5 text-foreground text-sm focus:outline-none focus:border-amber-400/50"
+              >
+                {NICHES.map(n => <option key={n} value={n}>{n}</option>)}
+              </select>
+            </div>
+
+            {/* Бюджет */}
+            <div>
+              <label className="text-sm text-muted-foreground mb-1.5 flex justify-between">
+                <span>Месячный бюджет на рекламу</span>
+                <span className="text-amber-400 font-medium">{fmtRub(budget)}</span>
+              </label>
+              <input
+                type="range" min={10000} max={500000} step={5000}
+                value={budget}
+                onChange={e => setBudget(Number(e.target.value))}
+                className="w-full accent-amber-400"
+              />
+              <div className="flex justify-between text-xs text-muted-foreground/50 mt-1">
+                <span>10 000 ₽</span><span>500 000 ₽</span>
+              </div>
+            </div>
+
+            {/* Средний чек */}
+            <div>
+              <label className="text-sm text-muted-foreground mb-1.5 flex justify-between">
+                <span>Средний чек</span>
+                <span className="text-amber-400 font-medium">{fmtRub(avgCheck)}</span>
+              </label>
+              <input
+                type="range" min={500} max={50000} step={500}
+                value={avgCheck}
+                onChange={e => setAvgCheck(Number(e.target.value))}
+                className="w-full accent-amber-400"
+              />
+              <div className="flex justify-between text-xs text-muted-foreground/50 mt-1">
+                <span>500 ₽</span><span>50 000 ₽</span>
+              </div>
+            </div>
+
+            {/* Конверсия сайта */}
+            <div>
+              <label className="text-sm text-muted-foreground mb-1.5 flex justify-between">
+                <span>Конверсия сайта в заказ</span>
+                <span className="text-amber-400 font-medium">{convRate}%</span>
+              </label>
+              <input
+                type="range" min={0.3} max={8} step={0.1}
+                value={convRate}
+                onChange={e => setConvRate(parseFloat(e.target.value))}
+                className="w-full accent-amber-400"
+              />
+              <div className="flex justify-between text-xs text-muted-foreground/50 mt-1">
+                <span>0.3%</span><span>8%</span>
+              </div>
+            </div>
+
+            {/* Количество SKU */}
+            <div>
+              <label className="text-sm text-muted-foreground mb-1.5 flex justify-between">
+                <span>Количество SKU (артикулов)</span>
+                <span className="text-amber-400 font-medium">{skuCount.toLocaleString("ru-RU")}</span>
+              </label>
+              <input
+                type="range" min={10} max={20000} step={10}
+                value={skuCount}
+                onChange={e => setSkuCount(Number(e.target.value))}
+                className="w-full accent-amber-400"
+              />
+              <div className="flex justify-between text-xs text-muted-foreground/50 mt-1">
+                <span>10</span><span>20 000</span>
+              </div>
+            </div>
+
+            {/* Возраст кампании */}
+            <div>
+              <label className="text-sm text-muted-foreground mb-2 block">Возраст рекламных кампаний</label>
+              <div className="flex gap-2">
+                {(["new", "mid", "old"] as const).map(v => (
+                  <button
+                    key={v}
+                    onClick={() => setCampaignAge(v)}
+                    className={`flex-1 py-1.5 rounded-lg text-sm border transition-all ${
+                      campaignAge === v
+                        ? "bg-amber-400 text-gray-900 border-amber-400 font-medium"
+                        : "border-white/15 text-muted-foreground hover:border-amber-400/40"
+                    }`}
+                  >
+                    {v === "new" ? "До 3 мес." : v === "mid" ? "3–12 мес." : "Год и более"}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Чекбоксы */}
+            <div className="space-y-3 pt-1">
+              <p className="text-sm text-muted-foreground font-medium">Где рекламируетесь:</p>
+              {([ 
+                { key: "search", label: "Поиск Яндекса" },
+                { key: "rsya", label: "РСЯ (рекламная сеть)" },
+                { key: "gallery", label: "Товарная галерея" },
+              ] as { key: keyof typeof channels; label: string }[]).map(({ key, label }) => (
+                <label key={key} className="flex items-center gap-3 cursor-pointer group">
+                  <div
+                    onClick={() => toggleChannel(key)}
+                    className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
+                      channels[key]
+                        ? "bg-amber-400 border-amber-400"
+                        : "border-white/25 group-hover:border-amber-400/50"
+                    }`}
+                  >
+                    {channels[key] && <Icon name="Check" size={12} className="text-gray-900" />}
+                  </div>
+                  <span className="text-sm text-foreground">{label}</span>
+                </label>
+              ))}
+
+              <div className="pt-1 space-y-3">
+                <p className="text-sm text-muted-foreground font-medium">Дополнительно:</p>
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div
+                    onClick={() => setUseDynamic(!useDynamic)}
+                    className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
+                      useDynamic
+                        ? "bg-amber-400 border-amber-400"
+                        : "border-white/25 group-hover:border-amber-400/50"
+                    }`}
+                  >
+                    {useDynamic && <Icon name="Check" size={12} className="text-gray-900" />}
+                  </div>
+                  <span className="text-sm text-foreground">Использую динамическую рекламу</span>
+                </label>
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div
+                    onClick={() => setHasCompetitors(!hasCompetitors)}
+                    className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
+                      hasCompetitors
+                        ? "bg-amber-400 border-amber-400"
+                        : "border-white/25 group-hover:border-amber-400/50"
+                    }`}
+                  >
+                    {hasCompetitors && <Icon name="Check" size={12} className="text-gray-900" />}
+                  </div>
+                  <span className="text-sm text-foreground">Есть активные конкуренты в нише</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── ПРАВАЯ КОЛОНКА — РЕЗУЛЬТАТЫ ─── */}
+          <div className="flex flex-col gap-4">
+            {/* Главная цифра */}
+            <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 text-center">
+              <p className="text-sm text-red-400/80 uppercase tracking-widest mb-2">Вы теряете ежемесячно</p>
+              <p className="text-5xl font-bold text-red-400 mb-1">{fmtRub(results.lostBudget)}</p>
+              <p className="text-sm text-muted-foreground">
+                {results.junkRate}% вашего бюджета уходит на нецелевой трафик
+              </p>
+            </div>
+
+            {/* Карточки метрик */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-background rounded-xl p-4 border border-white/10">
+                <p className="text-xs text-muted-foreground mb-1">Кликов всего</p>
+                <p className="text-2xl font-bold text-foreground">{results.totalClicks.toLocaleString("ru-RU")}</p>
+                <p className="text-xs text-red-400 mt-1">из них мусор: {results.junkClicks.toLocaleString("ru-RU")}</p>
+              </div>
+              <div className="bg-background rounded-xl p-4 border border-white/10">
+                <p className="text-xs text-muted-foreground mb-1">Целевых кликов</p>
+                <p className="text-2xl font-bold text-amber-400">{results.goodClicks.toLocaleString("ru-RU")}</p>
+                <p className="text-xs text-muted-foreground mt-1">реальный потенциал</p>
+              </div>
+              <div className="bg-background rounded-xl p-4 border border-white/10">
+                <p className="text-xs text-muted-foreground mb-1">ДРР сейчас</p>
+                <p className="text-2xl font-bold text-red-400">{results.drrCurrent}%</p>
+                <p className="text-xs text-muted-foreground mt-1">доля рекламных расходов</p>
+              </div>
+              <div className="bg-background rounded-xl p-4 border border-white/10">
+                <p className="text-xs text-muted-foreground mb-1">ДРР без мусора</p>
+                <p className="text-2xl font-bold text-green-400">{results.drrOptimal}%</p>
+                <p className="text-xs text-muted-foreground mt-1">после чистки трафика</p>
+              </div>
+            </div>
+
+            {/* Потери выручки */}
+            <div className="bg-background rounded-xl p-4 border border-white/10">
+              <div className="flex justify-between items-center mb-3">
+                <p className="text-sm text-muted-foreground">Рабочий бюджет</p>
+                <p className="text-sm font-medium text-green-400">{fmtRub(results.effectiveBudget)}</p>
+              </div>
+              <div className="flex justify-between items-center mb-3">
+                <p className="text-sm text-muted-foreground">Потери выручки</p>
+                <p className="text-sm font-medium text-red-400">−{fmtRub(results.revenueLost)}</p>
+              </div>
+              <div className="flex justify-between items-center">
+                <p className="text-sm text-muted-foreground">Реальных заказов в месяц</p>
+                <p className="text-sm font-medium text-foreground">{results.ordersReal}</p>
+              </div>
+            </div>
+
+            {/* За год */}
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 flex items-center gap-4">
+              <Icon name="TrendingDown" size={28} className="text-amber-400 shrink-0" />
+              <div>
+                <p className="text-xs text-amber-400/80 uppercase tracking-wider">Потери за 12 месяцев</p>
+                <p className="text-2xl font-bold text-amber-400">{fmtRub(results.lostBudget * 12)}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">при сохранении текущего бюджета</p>
+              </div>
+            </div>
+
+            <a
+              href="#"
+              onClick={e => { e.preventDefault(); document.querySelector("#audit")?.scrollIntoView({ behavior: "smooth" }); }}
+              className="inline-flex items-center justify-center gap-2 bg-amber-400 hover:bg-amber-300 text-gray-900 font-bold px-6 py-4 rounded-xl transition-all hover:scale-105 active:scale-95 text-sm"
+            >
+              <Icon name="Shield" size={18} />
+              Хочу вернуть этот бюджет — получить аудит бесплатно
+            </a>
+          </div>
+        </div>
+
+        <p className="text-center text-xs text-muted-foreground/40 mt-6">
+          * Расчёт оценочный, основан на статистике 377 проектов. Реальные цифры определяются после аудита аккаунта.
+        </p>
+      </div>
+    </section>
+  );
+}
 
 export default function Index() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -640,23 +1020,8 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ─── КАЛЬКУЛЯТОР (ЗАГЛУШКА) ─── */}
-      <section className="py-24 bg-card">
-        <div className="container max-w-5xl mx-auto px-6">
-          <div className="rounded-2xl border-2 border-dashed border-amber-500/20 bg-amber-500/5 p-12 text-center">
-            <Icon name="Calculator" size={40} className="text-amber-400 mx-auto mb-4" />
-            <h3 className="font-display text-2xl font-bold text-amber-400 uppercase mb-3">
-              Калькулятор потерь
-            </h3>
-            <p className="text-muted-foreground max-w-lg mx-auto mb-2">
-              «Сколько вы теряете на мусорных показах» — интерактивный ROI-калькулятор
-            </p>
-            <p className="text-muted-foreground/50 text-sm">
-              Этот блок будет разработан и встроен после согласования лендинга
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* ─── КАЛЬКУЛЯТОР ПОТЕРЬ ─── */}
+      <CalcSection />
 
       {/* ─── ЦЕНА ─── */}
       <section className="py-24 container max-w-5xl mx-auto px-6">
