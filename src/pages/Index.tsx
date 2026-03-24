@@ -308,8 +308,8 @@ function CalcSection() {
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mt-3 mb-4">
             Сколько вы теряете на мусорных показах?
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
-            Введите параметры своей рекламы — калькулятор покажет реальные потери бюджета прямо сейчас
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-2">
+            Калькулятор работает на основе реальных данных сотен интернет-магазинов из моей практики — по каждой тематике выведены усреднённые показатели потерь. Введите параметры своей рекламы и узнайте, сколько бюджета утекает прямо сейчас.
           </p>
         </div>
 
