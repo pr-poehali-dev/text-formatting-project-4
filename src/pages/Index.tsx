@@ -735,7 +735,7 @@ export default function Index() {
           <div className="text-center mb-16">
             <span className="text-amber-400 text-sm font-medium uppercase tracking-widest">Корень проблемы</span>
             <h2 className="font-display text-4xl md:text-5xl font-bold mt-3 uppercase">
-              Почему стандартный запуск<br />
+              Почему стандартный запуск динамики<br />
               <span className="text-amber-400">почти всегда разочаровывает</span>
             </h2>
           </div>
