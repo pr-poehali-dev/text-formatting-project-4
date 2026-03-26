@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import Icon from "@/components/ui/icon";
 import ContactModal from "@/components/ContactModal";
 
@@ -209,7 +209,26 @@ const SEASON_COEFFICIENTS: Record<string, number> = {
   "Садоводство и огород": 1.3,
 };
 
-function CalcSection() {
+// Базовый CPC (поиск) для каждой тематики, руб.
+const NICHE_BASE_CPC: Record<string, number> = {
+  "Одежда и обувь": 24,
+  "Электроника и гаджеты": 38,
+  "Детские товары": 22,
+  "Мебель и интерьер": 32,
+  "Спорт и туризм": 28,
+  "Зоотовары": 18,
+  "Косметика и парфюмерия": 26,
+  "Товары для дома": 21,
+  "Строительство и ремонт": 42,
+  "Автотовары": 35,
+  "Ювелирные украшения": 55,
+  "Продукты питания": 15,
+  "Медицинские товары": 30,
+  "Книги и канцтовары": 14,
+  "Садоводство и огород": 19,
+};
+
+function CalcSection({ openModal }: { openModal: (source: string, ymGoal?: string) => void }) {
   const [budget, setBudget] = useState(50000);
   const [niche, setNiche] = useState("Электроника и гаджеты");
   const [skuCount, setSkuCount] = useState(500);
@@ -219,6 +238,9 @@ function CalcSection() {
   const [avgCheck, setAvgCheck] = useState(3500);
   const [convRate, setConvRate] = useState(1.5);
   const [campaignAge, setCampaignAge] = useState<"new" | "mid" | "old">("mid");
+  const [isCalculating, setIsCalculating] = useState(false);
+  const [displayResults, setDisplayResults] = useState<ReturnType<typeof calcResults> | null>(null);
+  const calcTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const ymCalc = () => {
     if (typeof window !== "undefined" && (window as unknown as {ym?: (id: number, action: string, goal: string) => void}).ym) {
@@ -231,86 +253,76 @@ function CalcSection() {
     ymCalc();
   };
 
-  const results = useMemo(() => {
+  function calcResults(params: {
+    budget: number; niche: string; skuCount: number; useDynamic: boolean;
+    channels: { search: boolean; rsya: boolean; gallery: boolean };
+    hasCompetitors: boolean; avgCheck: number; convRate: number;
+    campaignAge: "new" | "mid" | "old";
+  }) {
+    const { budget, niche, skuCount, useDynamic, channels, hasCompetitors, avgCheck, convRate, campaignAge } = params;
     const nicheMult = SEASON_COEFFICIENTS[niche] ?? 1.0;
 
-    // базовый % мусорного трафика
     let junkBase = 0.28;
-
-    // влияние каналов
     if (channels.rsya) junkBase += 0.08;
     if (channels.gallery) junkBase += 0.04;
     if (channels.search) junkBase -= 0.03;
-
-    // влияние динамики
     if (useDynamic) junkBase += 0.06;
-
-    // влияние количества SKU: чем больше — тем больше мусора без правильной структуры
     if (skuCount > 5000) junkBase += 0.07;
     else if (skuCount > 1000) junkBase += 0.04;
     else if (skuCount < 100) junkBase -= 0.03;
-
-    // влияние конкурентов (скликивание)
     if (hasCompetitors) junkBase += 0.05;
-
-    // возраст кампании: новые страдают больше
     if (campaignAge === "new") junkBase += 0.06;
     else if (campaignAge === "old") junkBase -= 0.04;
-
-    // ниша
     junkBase *= nicheMult;
-
-    // ограничиваем разумными пределами
     const junkRate = Math.min(Math.max(junkBase, 0.12), 0.62);
 
-    // потери
     const lostBudget = Math.round(budget * junkRate);
     const effectiveBudget = budget - lostBudget;
 
-    // клики и заказы
-    const avgCpc = niche === "Электроника и гаджеты" ? 38 :
-                   niche === "Ювелирные украшения" ? 55 :
-                   niche === "Строительство и ремонт" ? 42 : 28;
+    // CPC зависит от тематики + канала: РСЯ даёт дешёвые клики (×0.45 от поиска)
+    const baseCpc = NICHE_BASE_CPC[niche] ?? 28;
+    // Средневзвешенный CPC по выбранным каналам
+    let weightedCpc = 0;
+    let channelCount = 0;
+    if (channels.search) { weightedCpc += baseCpc; channelCount++; }
+    if (channels.rsya) { weightedCpc += baseCpc * 0.42; channelCount++; }
+    if (channels.gallery) { weightedCpc += baseCpc * 0.65; channelCount++; }
+    const avgCpc = channelCount > 0 ? weightedCpc / channelCount : baseCpc;
+
     const totalClicks = Math.round(budget / avgCpc);
     const junkClicks = Math.round(totalClicks * junkRate);
     const goodClicks = totalClicks - junkClicks;
 
     const crFactor = convRate / 100;
     const ordersTotal = Math.round(totalClicks * crFactor);
-    const ordersLost = Math.round(junkClicks * crFactor * 0.15); // часть мусора даёт фейк-конверсии
+    const ordersLost = Math.round(junkClicks * crFactor * 0.15);
     const ordersReal = ordersTotal - ordersLost;
 
-    // потери в деньгах
-    const revenueLost = Math.round(lostBudget * (avgCheck / avgCpc) * crFactor * 0.6);
-
-    // ДРР сейчас
     const drrCurrent = budget > 0 && ordersReal > 0
       ? ((budget / (ordersReal * avgCheck)) * 100).toFixed(1)
       : "—";
 
-    // ДРР без мусора: реалистичный целевой показатель после чистки трафика
-    // Бенчмарк для ecom: ДРР 5–9% считается хорошим результатом
-    // Рассчитываем от параметров: чем выше чек и CR → тем ниже ДРР
-    // base = avgCpc / (crFactor * avgCheck) * 100 — теоретический ДРР при идеальном трафике
-    // После чистки CR улучшается на 60%, cpc снижается на 25%
     const drrOptimalBase = (avgCpc * 0.75) / (crFactor * 1.60 * avgCheck) * 100;
-    // Нормируем в диапазон 4.0–9.8% — реалистичный бенчмарк для ecom
     const drrOptimalNorm = 4.0 + (Math.min(drrOptimalBase, 200) / 200) * 5.8;
     const drrOptimal = effectiveBudget > 0 ? drrOptimalNorm.toFixed(1) : "—";
 
-    return {
-      junkRate: Math.round(junkRate * 100),
-      lostBudget,
-      effectiveBudget,
-      totalClicks,
-      junkClicks,
-      goodClicks,
-      ordersReal,
-      revenueLost,
-      drrCurrent,
-      drrOptimal,
-    };
-  }, [budget, niche, skuCount, useDynamic, channels, hasCompetitors, avgCheck, convRate, campaignAge]);
+    return { junkRate: Math.round(junkRate * 100), lostBudget, effectiveBudget, totalClicks, junkClicks, goodClicks, ordersReal, drrCurrent, drrOptimal };
+  }
+
+  const rawResults = useMemo(() => calcResults({ budget, niche, skuCount, useDynamic, channels, hasCompetitors, avgCheck, convRate, campaignAge }),
+    [budget, niche, skuCount, useDynamic, channels, hasCompetitors, avgCheck, convRate, campaignAge]);
+
+  useEffect(() => {
+    setIsCalculating(true);
+    if (calcTimer.current) clearTimeout(calcTimer.current);
+    calcTimer.current = setTimeout(() => {
+      setDisplayResults(rawResults);
+      setIsCalculating(false);
+    }, 900);
+    return () => { if (calcTimer.current) clearTimeout(calcTimer.current); };
+  }, [rawResults]);
+
+  const results = displayResults ?? rawResults;
 
   const fmtRub = (n: number) =>
     n.toLocaleString("ru-RU") + " ₽";
@@ -488,9 +500,24 @@ function CalcSection() {
           </div>
 
           {/* ─── ПРАВАЯ КОЛОНКА — РЕЗУЛЬТАТЫ ─── */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 relative">
+            {/* Оверлей загрузки */}
+            {isCalculating && (
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-2xl bg-background/80 backdrop-blur-sm pointer-events-none">
+                <div className="relative w-12 h-12">
+                  <div className="absolute inset-0 rounded-full border-2 border-amber-400/20" />
+                  <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-amber-400 animate-spin" />
+                  <div className="absolute inset-2 rounded-full border border-amber-400/30 animate-pulse" />
+                </div>
+                <div className="text-center">
+                  <p className="text-amber-400 text-sm font-medium">Подключение к базе данных...</p>
+                  <p className="text-muted-foreground text-xs mt-0.5">Анализ по 377 проектам</p>
+                </div>
+              </div>
+            )}
+
             {/* Главная цифра */}
-            <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 text-center">
+            <div className={`bg-red-500/10 border border-red-500/30 rounded-2xl p-6 text-center transition-opacity duration-300 ${isCalculating ? "opacity-40" : "opacity-100"}`}>
               <p className="text-sm text-red-400/80 uppercase tracking-widest mb-2">Вы теряете ежемесячно</p>
               <p className="text-5xl font-bold text-red-400 mb-1">{fmtRub(results.lostBudget)}</p>
               <p className="text-sm text-muted-foreground">
@@ -499,7 +526,7 @@ function CalcSection() {
             </div>
 
             {/* Карточки метрик */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className={`grid grid-cols-2 gap-3 transition-opacity duration-300 ${isCalculating ? "opacity-40" : "opacity-100"}`}>
               <div className="bg-background rounded-xl p-4 border border-white/10">
                 <p className="text-xs text-muted-foreground mb-1">Кликов всего</p>
                 <p className="text-2xl font-bold text-foreground">{results.totalClicks.toLocaleString("ru-RU")}</p>
@@ -522,24 +549,8 @@ function CalcSection() {
               </div>
             </div>
 
-            {/* Потери выручки */}
-            <div className="bg-background rounded-xl p-4 border border-white/10">
-              <div className="flex justify-between items-center mb-3">
-                <p className="text-sm text-muted-foreground">Рабочий бюджет</p>
-                <p className="text-sm font-medium text-green-400">{fmtRub(results.effectiveBudget)}</p>
-              </div>
-              <div className="flex justify-between items-center mb-3">
-                <p className="text-sm text-muted-foreground">Потери выручки</p>
-                <p className="text-sm font-medium text-red-400">−{fmtRub(results.revenueLost)}</p>
-              </div>
-              <div className="flex justify-between items-center">
-                <p className="text-sm text-muted-foreground">Реальных заказов в месяц</p>
-                <p className="text-sm font-medium text-foreground">{results.ordersReal}</p>
-              </div>
-            </div>
-
             {/* За год */}
-            <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 flex items-center gap-4">
+            <div className={`bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 flex items-center gap-4 transition-opacity duration-300 ${isCalculating ? "opacity-40" : "opacity-100"}`}>
               <Icon name="TrendingDown" size={28} className="text-amber-400 shrink-0" />
               <div>
                 <p className="text-xs text-amber-400/80 uppercase tracking-wider">Потери за 12 месяцев</p>
@@ -549,7 +560,7 @@ function CalcSection() {
             </div>
 
             <button
-              onClick={() => openModal("Калькулятор — Хочу вернуть бюджет")}
+              onClick={() => openModal("Калькулятор — Хочу вернуть бюджет", "calc_lead")}
               className="inline-flex items-center justify-center gap-2 bg-amber-400 hover:bg-amber-300 text-gray-900 font-bold px-6 py-4 rounded-xl transition-all hover:scale-105 active:scale-95 text-sm"
             >
               <Icon name="Shield" size={18} />
@@ -572,9 +583,11 @@ export default function Index() {
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalSource, setModalSource] = useState("Сайт");
+  const [modalYmGoal, setModalYmGoal] = useState("leadgoal");
 
-  const openModal = (source: string) => {
+  const openModal = (source: string, ymGoal = "leadgoal") => {
     setModalSource(source);
+    setModalYmGoal(ymGoal);
     setModalOpen(true);
   };
 
@@ -1048,7 +1061,7 @@ export default function Index() {
       </section>
 
       {/* ─── КАЛЬКУЛЯТОР ПОТЕРЬ ─── */}
-      <CalcSection />
+      <CalcSection openModal={openModal} />
 
       {/* ─── ЦЕНА ─── */}
       <section className="py-24 container max-w-5xl mx-auto px-6">
@@ -1208,6 +1221,7 @@ export default function Index() {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         source={modalSource}
+        ymGoal={modalYmGoal}
       />
     </div>
   );

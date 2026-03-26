@@ -5,6 +5,7 @@ interface ContactModalProps {
   isOpen: boolean;
   onClose: () => void;
   source?: string;
+  ymGoal?: string;
 }
 
 declare global {
@@ -15,7 +16,7 @@ declare global {
 
 const LEAD_URL = "https://functions.poehali.dev/e3e54825-1bd4-41dd-afd9-bbbaddff5837";
 
-export default function ContactModal({ isOpen, onClose, source = "Сайт" }: ContactModalProps) {
+export default function ContactModal({ isOpen, onClose, source = "Сайт", ymGoal = "leadgoal" }: ContactModalProps) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -50,7 +51,7 @@ export default function ContactModal({ isOpen, onClose, source = "Сайт" }: C
       });
       if (res.ok) {
         setStatus("success");
-        if (window.ym) window.ym(107246756, "reachGoal", "leadgoal");
+        if (window.ym) window.ym(107246756, "reachGoal", ymGoal);
       } else {
         setStatus("error");
       }
