@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import Icon from "@/components/ui/icon";
+import ContactModal from "@/components/ContactModal";
 
 declare global {
   interface Window {
@@ -533,14 +534,13 @@ function CalcSection() {
               </div>
             </div>
 
-            <a
-              href="#"
-              onClick={e => { e.preventDefault(); document.querySelector("#audit")?.scrollIntoView({ behavior: "smooth" }); }}
+            <button
+              onClick={() => openModal("Калькулятор — Хочу вернуть бюджет")}
               className="inline-flex items-center justify-center gap-2 bg-amber-400 hover:bg-amber-300 text-gray-900 font-bold px-6 py-4 rounded-xl transition-all hover:scale-105 active:scale-95 text-sm"
             >
               <Icon name="Shield" size={18} />
               Хочу вернуть этот бюджет — получить аудит бесплатно
-            </a>
+            </button>
           </div>
         </div>
 
@@ -556,6 +556,13 @@ export default function Index() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalSource, setModalSource] = useState("Сайт");
+
+  const openModal = (source: string) => {
+    setModalSource(source);
+    setModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans antialiased">
@@ -590,10 +597,16 @@ export default function Index() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <button className="bg-amber-400 hover:bg-amber-300 text-gray-900 font-bold text-lg px-8 py-4 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95">
+            <button
+              onClick={() => openModal("Hero — Получить аудит")}
+              className="bg-amber-400 hover:bg-amber-300 text-gray-900 font-bold text-lg px-8 py-4 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95"
+            >
               Получить бесплатный аудит →
             </button>
-            <button className="border border-white/20 hover:border-amber-400/50 text-foreground px-8 py-4 rounded-lg transition-all duration-200 hover:text-amber-400">
+            <button
+              onClick={() => document.getElementById("math-section")?.scrollIntoView({ behavior: "smooth" })}
+              className="border border-white/20 hover:border-amber-400/50 text-foreground px-8 py-4 rounded-lg transition-all duration-200 hover:text-amber-400"
+            >
               Узнать подробнее
             </button>
           </div>
@@ -614,7 +627,7 @@ export default function Index() {
       </section>
 
       {/* ─── МАТЕМАТИКА ─── */}
-      <section className="py-24 container max-w-5xl mx-auto px-6">
+      <section id="math-section" className="py-24 container max-w-5xl mx-auto px-6">
         <div className="text-center mb-16">
           <span className="text-amber-400 text-sm font-medium uppercase tracking-widest">Математика рекламы</span>
           <h2 className="font-display text-4xl md:text-5xl font-bold mt-3 uppercase">
@@ -639,7 +652,7 @@ export default function Index() {
                 ["Цена клика", "120 руб."],
                 ["Конверсия", "0,5%"],
                 ["Стоимость заказа", "24 000 руб."],
-                ["Маржа товара", "1 335 руб."],
+                ["Маржа товара", "4 800 руб."],
               ].map(([k, v]) => (
                 <div key={k} className="flex justify-between items-center py-2 border-b border-white/5">
                   <span className="text-muted-foreground text-sm">{k}</span>
@@ -648,7 +661,7 @@ export default function Index() {
               ))}
               <div className="flex justify-between items-center pt-3">
                 <span className="font-semibold">Итог с заказа</span>
-                <span className="font-display text-2xl font-bold text-red-400">−22 665 руб.</span>
+                <span className="font-display text-2xl font-bold text-red-400">−19 200 руб.</span>
               </div>
             </div>
           </div>
@@ -665,10 +678,10 @@ export default function Index() {
             </div>
             <div className="space-y-3">
               {[
-                ["Цена клика", "12 руб."],
+                ["Цена клика", "36 руб."],
                 ["Конверсия", "4%"],
-                ["Стоимость заказа", "300 руб."],
-                ["Маржа товара", "1 335 руб."],
+                ["Стоимость заказа", "900 руб."],
+                ["Маржа товара", "4 800 руб."],
               ].map(([k, v]) => (
                 <div key={k} className="flex justify-between items-center py-2 border-b border-white/5">
                   <span className="text-muted-foreground text-sm">{k}</span>
@@ -677,7 +690,7 @@ export default function Index() {
               ))}
               <div className="flex justify-between items-center pt-3">
                 <span className="font-semibold">Итог с заказа</span>
-                <span className="font-display text-2xl font-bold text-amber-400">+1 035 руб.</span>
+                <span className="font-display text-2xl font-bold text-amber-400">+3 900 руб.</span>
               </div>
             </div>
           </div>
@@ -796,8 +809,8 @@ export default function Index() {
               <div className="space-y-4">
                 {[
                   ["Рекламный бюджет", "248 000 руб./мес.", false],
-                  ["Количество заказов", "400 шт./мес.", true],
-                  ["Стоимость заказа", "100 руб.", true],
+                  ["Количество заказов", "417 шт./мес.", true],
+                  ["Стоимость заказа", "594 руб.", true],
                   ["Выручка (30 дней)", "3 122 000 руб.", true],
                 ].map(([k, v, hi]) => (
                   <div key={String(k)} className="flex justify-between items-center py-2 border-b border-amber-500/10">
@@ -1058,7 +1071,10 @@ export default function Index() {
           </div>
 
           <div className="p-8 pt-0">
-            <button className="w-full bg-amber-400 hover:bg-amber-300 text-gray-900 font-bold text-lg py-4 rounded-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
+            <button
+              onClick={() => openModal("Цены — Получить аудит")}
+              className="w-full bg-amber-400 hover:bg-amber-300 text-gray-900 font-bold text-lg py-4 rounded-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+            >
               Получить бесплатный аудит →
             </button>
           </div>
@@ -1122,7 +1138,10 @@ export default function Index() {
             <div key={i} className="rounded-xl border border-white/10 bg-card overflow-hidden">
               <button
                 className="w-full flex justify-between items-start gap-4 p-6 text-left"
-                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                onClick={() => {
+                  setOpenFaq(openFaq === i ? null : i);
+                  if (window.ym) window.ym(107246756, "reachGoal", "faq");
+                }}
               >
                 <span className="font-medium">{item.q}</span>
                 <Icon
@@ -1150,15 +1169,17 @@ export default function Index() {
             <span className="text-amber-400">которые уходят не туда</span>
           </h2>
           <p className="text-muted-foreground text-lg mb-4 max-w-2xl mx-auto">
-            Дайте мне гостевой доступ в ваш рекламный кабинет — и через 48 часов вы будете точно знать, где утечка и что с этим делать.
+            Дайте мне гостевой доступ в ваш рекламный кабинет — и через 24 часа вы будете точно знать, где утечка и что с этим делать.
           </p>
           <p className="text-muted-foreground mb-10">
             Без обязательств. Без давления. Просто цифры вашего магазина — честно и по делу.
           </p>
-          <button className="bg-amber-400 hover:bg-amber-300 text-gray-900 font-bold text-xl px-12 py-5 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg shadow-amber-500/25">
+          <button
+            onClick={() => openModal("Финальный CTA — Получить аудит")}
+            className="bg-amber-400 hover:bg-amber-300 text-gray-900 font-bold text-xl px-12 py-5 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg shadow-amber-500/25"
+          >
             Получить бесплатный аудит →
           </button>
-          <p className="text-muted-foreground/50 text-sm mt-4">Это занимает 5 рабочих дней</p>
         </div>
       </section>
 
@@ -1169,6 +1190,11 @@ export default function Index() {
         </div>
       </footer>
 
+      <ContactModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        source={modalSource}
+      />
     </div>
   );
 }
