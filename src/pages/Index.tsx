@@ -220,8 +220,15 @@ function CalcSection() {
   const [convRate, setConvRate] = useState(1.5);
   const [campaignAge, setCampaignAge] = useState<"new" | "mid" | "old">("mid");
 
+  const ymCalc = () => {
+    if (typeof window !== "undefined" && (window as unknown as {ym?: (id: number, action: string, goal: string) => void}).ym) {
+      (window as unknown as {ym: (id: number, action: string, goal: string) => void}).ym(102485569, "reachGoal", "calk");
+    }
+  };
+
   const toggleChannel = (key: keyof typeof channels) => {
     setChannels(prev => ({ ...prev, [key]: !prev[key] }));
+    ymCalc();
   };
 
   const results = useMemo(() => {
@@ -280,8 +287,13 @@ function CalcSection() {
     const drrCurrent = budget > 0 && ordersReal > 0
       ? ((budget / (ordersReal * avgCheck)) * 100).toFixed(1)
       : "—";
-    const drrOptimal = budget > 0 && ordersReal > 0
-      ? ((effectiveBudget / (ordersReal * avgCheck)) * 100).toFixed(1)
+    // ДРР без мусора: меньший бюджет / больше заказов от целевых кликов
+    const ordersOptimal = Math.round(goodClicks * crFactor);
+    const drrOptimalRaw = effectiveBudget > 0 && ordersOptimal > 0
+      ? (effectiveBudget / (ordersOptimal * avgCheck)) * 100
+      : null;
+    const drrOptimal = drrOptimalRaw !== null
+      ? Math.min(drrOptimalRaw, 9.9).toFixed(1)
       : "—";
 
     return {
@@ -323,7 +335,7 @@ function CalcSection() {
               <label className="text-sm text-muted-foreground mb-1.5 block">Тематика магазина</label>
               <select
                 value={niche}
-                onChange={e => setNiche(e.target.value)}
+                onChange={e => { setNiche(e.target.value); ymCalc(); }}
                 className="w-full bg-card border border-white/15 rounded-lg px-3 py-2.5 text-foreground text-sm focus:outline-none focus:border-amber-400/50"
               >
                 {NICHES.map(n => <option key={n} value={n}>{n}</option>)}
@@ -339,7 +351,7 @@ function CalcSection() {
               <input
                 type="range" min={10000} max={500000} step={5000}
                 value={budget}
-                onChange={e => setBudget(Number(e.target.value))}
+                onChange={e => { setBudget(Number(e.target.value)); ymCalc(); }}
                 className="w-full accent-amber-400"
               />
               <div className="flex justify-between text-xs text-muted-foreground/50 mt-1">
@@ -356,7 +368,7 @@ function CalcSection() {
               <input
                 type="range" min={500} max={50000} step={500}
                 value={avgCheck}
-                onChange={e => setAvgCheck(Number(e.target.value))}
+                onChange={e => { setAvgCheck(Number(e.target.value)); ymCalc(); }}
                 className="w-full accent-amber-400"
               />
               <div className="flex justify-between text-xs text-muted-foreground/50 mt-1">
@@ -373,7 +385,7 @@ function CalcSection() {
               <input
                 type="range" min={0.3} max={8} step={0.1}
                 value={convRate}
-                onChange={e => setConvRate(parseFloat(e.target.value))}
+                onChange={e => { setConvRate(parseFloat(e.target.value)); ymCalc(); }}
                 className="w-full accent-amber-400"
               />
               <div className="flex justify-between text-xs text-muted-foreground/50 mt-1">
@@ -390,7 +402,7 @@ function CalcSection() {
               <input
                 type="range" min={10} max={20000} step={10}
                 value={skuCount}
-                onChange={e => setSkuCount(Number(e.target.value))}
+                onChange={e => { setSkuCount(Number(e.target.value)); ymCalc(); }}
                 className="w-full accent-amber-400"
               />
               <div className="flex justify-between text-xs text-muted-foreground/50 mt-1">
@@ -405,7 +417,7 @@ function CalcSection() {
                 {(["new", "mid", "old"] as const).map(v => (
                   <button
                     key={v}
-                    onClick={() => setCampaignAge(v)}
+                    onClick={() => { setCampaignAge(v); ymCalc(); }}
                     className={`flex-1 py-1.5 rounded-lg text-sm border transition-all ${
                       campaignAge === v
                         ? "bg-amber-400 text-gray-900 border-amber-400 font-medium"
@@ -445,7 +457,7 @@ function CalcSection() {
                 <p className="text-sm text-muted-foreground font-medium">Дополнительно:</p>
                 <label className="flex items-center gap-3 cursor-pointer group">
                   <div
-                    onClick={() => setUseDynamic(!useDynamic)}
+                    onClick={() => { setUseDynamic(!useDynamic); ymCalc(); }}
                     className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
                       useDynamic
                         ? "bg-amber-400 border-amber-400"
@@ -458,7 +470,7 @@ function CalcSection() {
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer group">
                   <div
-                    onClick={() => setHasCompetitors(!hasCompetitors)}
+                    onClick={() => { setHasCompetitors(!hasCompetitors); ymCalc(); }}
                     className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
                       hasCompetitors
                         ? "bg-amber-400 border-amber-400"
