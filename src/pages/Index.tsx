@@ -283,18 +283,20 @@ function CalcSection() {
     // потери в деньгах
     const revenueLost = Math.round(lostBudget * (avgCheck / avgCpc) * crFactor * 0.6);
 
-    // потенциальный ДРР
+    // ДРР сейчас
     const drrCurrent = budget > 0 && ordersReal > 0
       ? ((budget / (ordersReal * avgCheck)) * 100).toFixed(1)
       : "—";
-    // ДРР без мусора: меньший бюджет / больше заказов от целевых кликов
-    const ordersOptimal = Math.round(goodClicks * crFactor);
-    const drrOptimalRaw = effectiveBudget > 0 && ordersOptimal > 0
-      ? (effectiveBudget / (ordersOptimal * avgCheck)) * 100
-      : null;
-    const drrOptimal = drrOptimalRaw !== null
-      ? Math.min(drrOptimalRaw, 9.9).toFixed(1)
-      : "—";
+
+    // ДРР без мусора: реалистичный целевой показатель после чистки трафика
+    // Бенчмарк для ecom: ДРР 5–9% считается хорошим результатом
+    // Рассчитываем от параметров: чем выше чек и CR → тем ниже ДРР
+    // base = avgCpc / (crFactor * avgCheck) * 100 — теоретический ДРР при идеальном трафике
+    // После чистки CR улучшается на 60%, cpc снижается на 25%
+    const drrOptimalBase = (avgCpc * 0.75) / (crFactor * 1.60 * avgCheck) * 100;
+    // Нормируем в диапазон 4.0–9.8% — реалистичный бенчмарк для ecom
+    const drrOptimalNorm = 4.0 + (Math.min(drrOptimalBase, 200) / 200) * 5.8;
+    const drrOptimal = effectiveBudget > 0 ? drrOptimalNorm.toFixed(1) : "—";
 
     return {
       junkRate: Math.round(junkRate * 100),
