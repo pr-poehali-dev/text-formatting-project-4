@@ -1,6 +1,7 @@
 import json
 import os
 import smtplib
+import traceback
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -62,9 +63,13 @@ def handler(event: dict, context) -> dict:
 
         msg.attach(MIMEText(html, "html"))
 
-        with smtplib.SMTP_SSL("smtp.yandex.ru", 465) as server:
+        print("Connecting to SMTP...")
+        with smtplib.SMTP_SSL("smtp.yandex.ru", 465, timeout=25) as server:
+            print("Connected, logging in...")
             server.login(smtp_user, smtp_password)
+            print("Logged in, sending...")
             server.sendmail(smtp_user, to_email, msg.as_string())
+            print("Sent!")
 
         return {
             "statusCode": 200,
@@ -73,6 +78,7 @@ def handler(event: dict, context) -> dict:
         }
 
     except Exception as e:
+        print("SMTP ERROR:", traceback.format_exc())
         return {
             "statusCode": 500,
             "headers": headers,
